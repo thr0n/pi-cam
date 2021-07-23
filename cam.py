@@ -16,20 +16,28 @@ def pressed():
     print("button was pressed")
     led.on()
     
-# Foto erstellen und lokal speichern
-    localname = 'tmp.jpg'
+    # Foto erstellen und lokal speichern
     camera = picamera.PiCamera()
-    camera.resolution=(1280, 960)
-    camera.capture(localname)
+    camera.vflip = True
+    #camera.resolution=(1280, 960)
+    camera.resolution=(2592, 1944)
+    print("Taking pictures")
+    for x in range(5):
+        localname = 'tmp' + str(x) + '.jpg'
+        camera.capture(localname)
+        #sleep(1)
     camera.close()
+    print("Pictures created")
 
     # Foto hochladen
-    f = open(localname, 'rb')
-    timestamp = datetime.datetime.now().isoformat()
-    upname = '/rapi-' + timestamp + '.jpg'
-    db.files_upload(f.read(), upname)
-    f.close()
-    os.remove(localname)
+    for x in range(5):
+        localname = 'tmp' + str(x) + '.jpg'
+        f = open(localname, 'rb')
+        timestamp = datetime.datetime.now().isoformat()
+        upname = '/rapi-' + timestamp + '.jpg'
+        db.files_upload(f.read(), upname)
+        f.close()
+        os.remove(localname)
 
 def released():
     print("button was released")
@@ -37,6 +45,8 @@ def released():
 
 button.when_pressed = pressed
 button.when_released = released
+
+print("cam is ready")
 
 while True:
     pass
